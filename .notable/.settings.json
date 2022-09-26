@@ -1,0 +1,32 @@
+{
+  "editor": {
+    "states": "[[\"E:\\\\Notable\\\\notes\\\\使用 ACT 在本地运行 Github Actions.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\使用 ACT 在本地运行 Github Actions.md\",\"history\":null,\"view\":{\"cursorState\":[{\"inSelectionMode\":false,\"selectionStart\":{\"lineNumber\":4,\"column\":1},\"position\":{\"lineNumber\":4,\"column\":1}}],\"viewState\":{\"scrollLeft\":0,\"firstPosition\":{\"lineNumber\":1,\"column\":1},\"firstPositionDeltaTop\":10},\"contributionsState\":{\"editor.contrib.folding\":{\"lineCount\":5,\"provider\":\"syntax\",\"foldedImports\":false},\"editor.contrib.wordHighlighter\":false}}}],[\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",\"history\":null,\"view\":{\"cursorState\":[{\"inSelectionMode\":false,\"selectionStart\":{\"lineNumber\":198,\"column\":18},\"position\":{\"lineNumber\":198,\"column\":18}}],\"viewState\":{\"scrollLeft\":0,\"firstPosition\":{\"lineNumber\":183,\"column\":1},\"firstPositionDeltaTop\":-1},\"contributionsState\":{\"editor.contrib.folding\":{\"lineCount\":437,\"provider\":\"syntax\",\"foldedImports\":false},\"editor.contrib.wordHighlighter\":false}}}],[\"E:\\\\Notable\\\\notes\\\\Debian⁄Ubuntu 设置默认编辑器.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\Debian⁄Ubuntu 设置默认编辑器.md\",\"history\":null,\"view\":{\"cursorState\":[{\"inSelectionMode\":false,\"selectionStart\":{\"lineNumber\":3,\"column\":9},\"position\":{\"lineNumber\":3,\"column\":9}}],\"viewState\":{\"scrollLeft\":0,\"firstPosition\":{\"lineNumber\":1,\"column\":1},\"firstPositionDeltaTop\":10},\"contributionsState\":{\"editor.contrib.folding\":{\"lineCount\":7,\"provider\":\"syntax\",\"foldedImports\":false},\"editor.contrib.wordHighlighter\":false}}}]]"
+  },
+  "homepage": {
+    "note": "\"\""
+  },
+  "palette": {
+    "recents": "[]"
+  },
+  "tabs": {
+    "all": "[[[\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",\"E:\\\\Notable\\\\notes\\\\Debian⁄Ubuntu 设置默认编辑器.md\",\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",\"E:\\\\Notable\\\\notes\\\\使用 ACT 在本地运行 Github Actions.md\"],0,true,false]]",
+    "current": "\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\""
+  },
+  "tags": {
+    "current": "[\"__NOTABLE_NOTES_ALL__\"]",
+    "expanded": "[\"__NOTABLE_NOTES__\",\"Notebooks\",\"__NOTABLE_TAGS__\",\"Templates\",\"CICD/Github Actions\",\"Video Audio Effects\"]"
+  },
+  "multiEditor": {
+    "selected": "[]"
+  },
+  "preview": {
+    "states": "[[\"E:\\\\Notable\\\\notes\\\\使用 ACT 在本地运行 Github Actions.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\使用 ACT 在本地运行 Github Actions.md\",\"scrollTop\":0,\"scrollLeft\":0}],[\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\Ubuntu 20.04 安装 OpenCV.md\",\"scrollTop\":3963,\"scrollLeft\":0}],[\"E:\\\\Notable\\\\notes\\\\Debian⁄Ubuntu 设置默认编辑器.md\",{\"id\":\"E:\\\\Notable\\\\notes\\\\Debian⁄Ubuntu 设置默认编辑器.md\",\"scrollTop\":30,\"scrollLeft\":0}]]"
+  },
+  "search": {
+    "query": "\"tag:\\\"Video Audio Effects\\\"\"",
+    "recents": "[\"tag:\\\"Video Audio Effects\\\"\",\"tag:\\\"CICD\\\"\",\"is:untagged\",\"is:favorited\"]"
+  },
+  "spellChecker": {
+    "overrides": "[]"
+  }
+}
