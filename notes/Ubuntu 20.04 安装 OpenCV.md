@@ -2,7 +2,7 @@
 title: Ubuntu 20.04 安装 OpenCV
 tags: [Video Audio Effects]
 created: 2022-09-26T06:00:09.217Z
-modified: 2022-09-26T10:44:53.841Z
+modified: 2022-09-26T12:50:01.460Z
 ---
 
 # Ubuntu 20.04 安装 OpenCV
@@ -370,7 +370,7 @@ $ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -- Build files have been written to: /home/developer/opencv_build/opencv-4.6.0/build
 ```
 
-### 编译安装 OpenCV
+### 3.4. 编译安装 OpenCV
 
 ```shell
 # 可以使用 make -j$(nproc) 来代替
@@ -379,6 +379,12 @@ $ make -j8
 $ sudo make install
 ```
 
+### 3.5. 验证版本
+
+```shell
+$ opencv_version
+4.6.0
+```
 
 ## 4. 问题记录
 
