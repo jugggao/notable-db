@@ -14,5 +14,3 @@ for /f "tokens=1-4 delims=: " %%i in ("%time%") do (
 cd /d E:\Notable\
 
 git pull && git add --all && git commit -m "Auto update %year%-%month%-%day% %hour%:%minute%" && git push origin main
-
-pause
