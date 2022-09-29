@@ -120,7 +120,7 @@ endsWith( searchString, searchValue ) - 判断 `searchString` 是否以 `searchV
 - 不区分大小写。
 - 会将可以转换的值转换为字符串进行比较。
 
-```javacript
+```javascript
 // 返回 true
 endsWith('Hello world', 'ld')
 ```
@@ -129,4 +129,37 @@ endsWith('Hello world', 'ld')
 
 `format( string, replaceValue0, replaceValue1, ..., replaceValue` - 格式化字符串
 
-- 
+- 使用花括号转义花括号
+
+```javascript
+// 返回 'Hello Mona the Octocat'
+format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat')
+
+// 返回 '{Hello Mona the Octocat!}'
+format('{{Hello {0} {1} {2}!}}', 'Mona', 'the', 'Octocat')
+```
+
+### join
+
+`join( array, optionalSeparator )` - 数组转字符串
+
+- 如果提供 `optionalSeparator`，则会插入到连接的值之间，否则使用默认分隔符 `,`。
+- 会将可以转换的值转换为字符串。
+
+```javascript
+// 可能返回 'bug, help wanted'
+join(github.event.issue.labels.*.name, ', ')
+```
+
+### toJSON
+
+`toJSON(value)` - 格式化为可读的 Json 格式
+
+```javascript
+// 可能返回 { "status": "Success" }
+toJSON(job)
+```
+
+### fromJSON
+
+`fromJSON(value)` - 
