@@ -2,7 +2,7 @@
 title: Github Actions - 上下文
 tags: [CICD/Github Actions]
 created: 2022-09-29T07:43:26.744Z
-modified: 2022-09-30T02:50:03.274Z
+modified: 2022-09-30T06:24:33.829Z
 ---
 
 # Github Actions - 上下文
@@ -388,8 +388,8 @@ jobs:
   windows_job:
     runs-on: windows-latest
     steps:
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
+      - run: echo 'Hi ${{ env.mascot }}' # Hi Mona
+      - run: echo 'Hi ${{ env.mascot }}' # Hi Octocat
         env:
           mascot: Octocat
   linux_job:
@@ -397,12 +397,67 @@ jobs:
     env:
       mascot: Tux
     steps:
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Tux
+      - run: echo 'Hi ${{ env.mascot }}' # Hi Tux
 ```
 
 ## `job` 上下文
 
-| 属性名称         | 类型     | 描述                                      |
-| ---------------- | -------- | ----------------------------------------- |
-| `job`            | `object` | workflow 任务中的每个任务都会更改此上下文 |
-| `job.container` | `string` | 指定的环境变量的值                        |
+| 属性名称                            | 类型     | 描述                                                   |
+| ----------------------------------- | -------- | ------------------------------------------------------ |
+| `job`                               | `object` | workflow 任务中的每个任务都会更改此上下文              |
+| `job.container`                     | `string` | 启动的容器相关信息                                     |
+| `job.container.id`                  | `string` | 容器 ID                                                |
+| `job.container.network`             | `string` | 容器网络                                               |
+| `job.services`                      | `string` | 容器运行的服务信息                                     |
+| `job.services.<service_id>.id`      | `string` | 容器服务的 ID                                          |
+| `job.services.<service_id>.network` | `string` | 容器服务的网络                                         |
+| `job.services.<service_id>.ports`   | `string` | 容器服务的端口号                                       |
+| `job.status                         | `string` | 当前任务的状态，值为 `success`、`failure`、`cancelled` |
+
+### 上下文示例
+
+```json
+{
+  "status": "success",
+  "container": {
+    "network": "github_network_53269bd575974817b43f4733536b200c"
+  },
+  "services": {
+    "postgres": {
+      "id": "60972d9aa486605e66b0dad4abb638dc3d9116f566579e418166eedb8abb9105",
+      "ports": {
+        "5432": "49153"
+      },
+      "network": "github_network_53269bd575974817b43f4733536b200c"
+    }
+  }
+}
+```
+
+### 使用示例
+
+```yaml
+name: PostgreSQL Service Example
+on: push
+jobs:
+  postgres-job:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          # Maps TCP port 5432 in the service container to a randomly chosen available port on the host.
+          - 5432
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: pg_isready -h localhost -p ${{ job.services.postgres.ports[5432] }}
+      - run: ./run-tests
+```
+
+## jobs 上下文
+
+`jobs` 上下文只在被引用的 workflow 中使用，并且只能在引用的 workflow 
