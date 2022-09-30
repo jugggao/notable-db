@@ -2,19 +2,19 @@
 title: Github Actions - 上下文
 tags: [CICD/Github Actions]
 created: 2022-09-29T07:43:26.744Z
-modified: 2022-09-30T06:24:33.829Z
+modified: 2022-09-30T05:44:54.832Z
 ---
 
 # Github Actions - 上下文
 
-## 介绍
+## 1. 介绍
 
-### 使用上下文
+### 1.1. 使用上下文
 
 - 索引语法：github['sha']
 - 属性引用语法：github.sha
 
-### 上下文可用性
+### 1.2. 上下文可用性
 
 | workflow 中的键                                  | 允许使用的上下文                                                          | 特殊函数                                       |
 | ------------------------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------- |
@@ -52,7 +52,7 @@ modified: 2022-09-30T06:24:33.829Z
 | on.workflow_call.inputs.<inputs_id>.default      | github, inputs                                                            |                                                |
 | on.workflow_call.outputs.<output_id>.value       | github, jobs, inputs                                                      |                                                |
 
-### 打印上下文信息
+### 1.3. 打印上下文信息
 
 ```yaml
 name: Context testing
@@ -77,7 +77,7 @@ jobs:
         run: echo '${{ toJSON(matrix) }}'
 ```
 
-## `github` 上下文
+## 2. `github` 上下文
 
 | 属性名称                   | 类型     | 描述                                                                                                                                                                         |
 | -------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -115,7 +115,7 @@ jobs:
 | `github.workflow`          | `string` | workflow 名称                                                                                                                                                                |
 | `github.workspace`         | `string` | workflow 工作目录                                                                                                                                                            |
 
-### 上下文示例
+### 2.1. 上下文示例
 
 ```json
 {
@@ -336,7 +336,7 @@ jobs:
 }
 ```
 
-### 使用示例
+### 2.2. 使用示例
 
 ```yaml
 name: Run CI
@@ -359,14 +359,13 @@ jobs:
         run: ./run-additional-pr-ci
 ```
 
-## `env` 上下文
+## 3. `env` 上下文
 
-| 属性名称         | 类型     | 描述                                      |
-| ---------------- | -------- | ----------------------------------------- |
-| `env`            | `object` | workflow 任务中的每个任务都会更改此上下文 |
-| `env.<env_name>` | `string` | 指定的环境变量的值                        |
+| 属性名称         | 类型     | 描述               |
+| ---------------- | -------- | ------------------ |
+| `env.<env_name>` | `string` | 指定的环境变量的值 |
 
-### 上下文示例
+### 3.1. 上下文示例
 
 ```json
 {
@@ -375,7 +374,7 @@ jobs:
 }
 ```
 
-### 使用示例
+### 3.2. 使用示例
 
 ```yaml
 name: Hi Mascot
@@ -400,11 +399,10 @@ jobs:
       - run: echo 'Hi ${{ env.mascot }}' # Hi Tux
 ```
 
-## `job` 上下文
+## 4. `job` 上下文
 
 | 属性名称                            | 类型     | 描述                                                   |
 | ----------------------------------- | -------- | ------------------------------------------------------ |
-| `job`                               | `object` | workflow 任务中的每个任务都会更改此上下文              |
 | `job.container`                     | `string` | 启动的容器相关信息                                     |
 | `job.container.id`                  | `string` | 容器 ID                                                |
 | `job.container.network`             | `string` | 容器网络                                               |
@@ -414,7 +412,7 @@ jobs:
 | `job.services.<service_id>.ports`   | `string` | 容器服务的端口号                                       |
 | `job.status                         | `string` | 当前任务的状态，值为 `success`、`failure`、`cancelled` |
 
-### 上下文示例
+### 4.1. 上下文示例
 
 ```json
 {
@@ -434,7 +432,7 @@ jobs:
 }
 ```
 
-### 使用示例
+### 4.2. 使用示例
 
 ```yaml
 name: PostgreSQL Service Example
@@ -458,6 +456,57 @@ jobs:
       - run: ./run-tests
 ```
 
-## jobs 上下文
+## 5. `jobs` 上下文
 
-`jobs` 上下文只在被引用的 workflow 中使用，并且只能在引用的 workflow 
+`jobs` 上下文只在被引用的 workflow 中使用，并且只能在引用的 workflow 中设置 outputs。
+
+| 属性名称                              | 类型     | 描述                                                                              |
+| ------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `jobs.<job_id>.result`                | `string` | 引用 workflow 任务执行结果，可能值有 `success`、`failure`、`cancelled`、`skipped` |
+| `jobs.<job_id>.outputs`               | `object` | 引用 workflow 的输出                                                              |
+| `jobs.<job_id>.outputs.<output_name>` | `string` | 指定引用 workflow 输出的值                                                        |
+
+### 5.1. 上下文示例
+
+```json
+{
+  "example_job": {
+    "result": "success",
+    "outputs": {
+      "output1": "hello",
+      "output2": "world"
+    }
+  }
+}
+```
+
+### 5.2. 使用示例
+
+```yaml
+name: Reusable workflow
+
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      firstword:
+        description: 'The first output string'
+        value: ${{ jobs.example_job.outputs.output1 }}
+      secondword:
+        description: 'The second output string'
+        value: ${{ jobs.example_job.outputs.output2 }}
+
+jobs:
+  example_job:
+    name: Generate output
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      output1: ${{ steps.step1.outputs.firstword }}
+      output2: ${{ steps.step2.outputs.secondword }}
+    steps:
+      - id: step1
+        run: echo "::set-output name=firstword::hello"
+      - id: step2
+        run: echo "::set-output name=secondword::world"
+```
