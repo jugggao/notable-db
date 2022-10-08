@@ -168,6 +168,22 @@ $ find /path -type f -print0 | xargs -0 rm
 `-L` 参数指定多少行作为一个命令行参数。
 
 ```shell
+$ echo -e "a\nb\nc\nd" | xargs -L 1 echo
+a
+b
+c
+
+$ echo -e "a\nb\nc\nd" | xargs -L 2 echo
+a b
+c
+```
+
+当指定 `-L 1` 时，`echo` 执行了三次，输出了三行，当指定 `-L 2` 时，`echo` 执行了两次，输出了两行。
+
+`-n` 参数指定每次将多少项，作为命令参数。
+
+```shell
+$ xargs -n 1 find -name
 ```
 
 
