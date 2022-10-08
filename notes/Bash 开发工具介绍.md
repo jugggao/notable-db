@@ -2,7 +2,7 @@
 title: Bash 开发工具介绍
 tags: [Bash]
 created: 2022-10-08T06:47:02.749Z
-modified: 2022-10-08T07:17:34.933Z
+modified: 2022-10-08T07:30:14.554Z
 ---
 
 # Bash 开发工具介绍
@@ -66,6 +66,11 @@ shell 格式化工具，在 VS Code 插件 shell-format 中引用此工具进行
 -fn, --func-next-line
 	函数起始大括号放置在单独的行上
 ```
+
+### 参考
+
+https://www.mankier.com/1/shfmt
+
 
 
 
