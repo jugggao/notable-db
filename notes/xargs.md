@@ -214,6 +214,3 @@ $ docker ps -q | xargs -n 1 --max-procs 0 docker kill
 ```
 
 上面命令表示，同时关闭尽可能多的 Docker 容器，这样运行速度会快很多。
-
-## 实例
-
