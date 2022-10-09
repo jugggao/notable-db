@@ -1,8 +1,7 @@
 ---
 title: echo
-tags: [Shell/Command/Builtin/IO]
 created: 2022-10-09T07:51:18.955Z
-modified: 2022-10-09T08:28:52.309Z
+modified: 2022-10-09T09:22:01.856Z
 ---
 
 # `echo`
@@ -40,12 +39,15 @@ echo [选项]... [字符串或变量]...
 
 ### 禁止换行
 
-默认情况下，每一个 `echo` 命令都会在最后打印一个终端换行符，使用 `-n` 可以禁止这个行为
+默认情况下，每一个 `echo` 命令都会在最后打印一个终端换行符，使用 `-n` 可以禁止这个行为。
 
 ```shell
+$ echo -n 'Hello'
+# 等同于
+$ echo -e 'Hello\c'
 ```
 
+## 注意
 
-
-
+``echo `command` `` 会删除 `command` 中生成的所有换行符。
 
