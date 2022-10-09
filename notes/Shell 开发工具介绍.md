@@ -1,11 +1,11 @@
 ---
-title: Bash 开发工具介绍
-tags: [Bash]
+title: Shell 开发工具介绍
+tags: [Shell]
 created: 2022-10-08T06:47:02.749Z
-modified: 2022-10-08T07:30:14.554Z
+modified: 2022-10-09T02:13:36.540Z
 ---
 
-# Bash 开发工具介绍
+# Shell 开发工具介绍
 
 ## `shfmt`
 

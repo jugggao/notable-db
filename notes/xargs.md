@@ -1,15 +1,15 @@
 ---
 title: xargs
-tags: [Bash/Command]
+tags: [Shell/Command]
 created: 2022-10-08T08:28:30.358Z
-modified: 2022-10-08T09:45:34.673Z
+modified: 2022-10-09T02:13:49.220Z
 ---
 
 # xargs
 
-## 简介
+## 1. 简介
 
-### 作用
+### 1.1. 作用
 
 Unix 命令都带有参数，有些命令可以接受「标准输入（stdin）」作为参数：
 
@@ -50,7 +50,7 @@ $ echo "one two three" | xargs mkdir
 
 上面的代码等同于 `mkdir one two three`。如果不加 `xargs` 就会报错，提示 `mkdir` 缺少操作参数。
 
-## 单独使用
+## 2. 单独使用
 
 > `xargs` 一般不会单独使用，一般都是和管道符（`|`）一起使用。
 
@@ -73,7 +73,7 @@ $ xargs find -name
 ./hello.txt
 ```
 
-## 选项
+## 3. 选项
 
 ```
 -0, --null
@@ -120,7 +120,7 @@ $ xargs find -name
     配合 -s 使用，当命令行字符数大于 -s 指定的数值时，退出 xargs
 ```
 
-### 更换分隔符
+### 3.1. 更换分隔符
 
 默认情况下，`xargs` 将换行符和空格作为分隔符，把标准输入分解成一个个命令行参数。
 
@@ -131,7 +131,7 @@ $ echo -e "a\tb\tc" | xargs -d "\t" echo
 a b c
 ```
 
-### 预览需要的执行命令
+### 3.2. 预览需要的执行命令
 
 使用 `xargs` 命令以后，由于存在转换参数过程，有时需要确认一下到底执行的是什么命令。
 
@@ -151,7 +151,7 @@ $ echo 'one two three' | xargs -t rm
 rm one two three
 ```
 
-### 使用 `null` 分隔符
+### 3.3. 使用 `null` 分隔符
 
 由于 `xargs` 默认将空格作为分隔符，所以不太适合处理文件名，因为文件名可能包含空格。
 
@@ -163,7 +163,7 @@ $ find /path -type f -print0 | xargs -0 rm
 
 上面命令删除 `/path` 路径下的所有文件。由于分隔符是 `null`，所以处理包含空格的文件名，也不会报错。
 
-### 处理多行与多项参数
+### 3.4. 处理多行与多项参数
 
 `-L` 参数指定多少行作为一个命令行参数。
 
@@ -183,7 +183,37 @@ c
 `-n` 参数指定每次将多少项，作为命令参数。
 
 ```shell
-$ xargs -n 1 find -name
+$ echo {0..9} | xargs -n 2 echo
+0 1
+2 3
+4 5
+6 7
+8 9
 ```
 
+### 3.5. 将参数传递给多个命令或指定参数位置
+
+`-I REPLACE_STR` 指定每一项命令参数的替代字符串，`REPLACE_STR` 是必选的。
+
+`-i REPLACE_STR` 指定每一项命令参数的替代字符串，`REPLACE_STR` 是可选的，缺省为 `{}`。
+
+```shell
+echo "one two three" | xargs -i sh -c 'echo {} && touch {}'
+
+echo "one two three" | xargs -I file sh -c 'echo file && rm file'
+```
+
+上面代码中，`{}` 与 `file` 是命令行参数的替代字符串，在执行命令时可以插入任意位置，也可以使用多次。
+
+### 3.6. 并行执行命令
+
+`-P MAX_PROCS` `--max-procs MAX_PROCS` 参数指定同时用多少个进程并行执行命令。`MAX_PROCS` 为 0 时表示不限制进程数。
+
+```shell
+$ docker ps -q | xargs -n 1 --max-procs 0 docker kill
+```
+
+上面命令表示，同时关闭尽可能多的 Docker 容器，这样运行速度会快很多。
+
+## 实例
 
