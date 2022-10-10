@@ -2,7 +2,7 @@
 title: xargs
 tags: [Shell/Command]
 created: 2022-10-08T08:28:30.358Z
-modified: 2022-10-09T02:13:49.220Z
+modified: 2022-10-10T08:52:03.161Z
 ---
 
 # xargs
