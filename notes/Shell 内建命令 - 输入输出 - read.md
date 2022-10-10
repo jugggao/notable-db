@@ -107,7 +107,55 @@ exit 0
 ### 使用 `read` 检测功能键
 
 ```shell
+#!/usr/bin/bash env
 
+SUCCESS=0
+OTHER=65
+
+uparrow=$'\x1b[A'
+downarrow=$'\x1b[B'
+leftarrow=$'\x1b[D'
+rightarrow=$'\x1b[C'
+uparrow=$'\x1b[A'
+home=$'\x1b[1'
+end=$'\x1b[4'
+pgup=$'\x1b[5'
+pgdn=$'\x1b[6'
+
+read -r -s -n3 -p "Hit an arrow key: " x
+
+case "$x" in
+"$uparrow")
+    echo "You pressed up-arrow"
+    ;;
+"$downarrow")
+    echo "You pressed down-arrow"
+    ;;
+"$leftarrow")
+    echo "You pressed left-arrow"
+    ;;
+"$rightarrow")
+    echo "You pressed right-arrow"
+    ;;
+"$home")
+    echo "You pressed Home"
+    ;;
+"$end")
+    echo "You pressed End"
+    ;;
+"$pgup")
+    echo "You pressed PgUp"
+    ;;
+"$pgdn")
+    echo "You pressed PgDn"
+    ;;
+*)
+    echo "Some other key pressed"
+    exit $OTHER
+    ;;
+esac
+
+exit $SUCCESS
 ```
 
 
