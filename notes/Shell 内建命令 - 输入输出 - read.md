@@ -37,7 +37,7 @@ read [-ers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] 
 
 ## 用例
 
-### 为变量赋值
+### 使用 `read` 为变量赋值
 
 ```shell
 #!/usr/bin/env bash
@@ -56,4 +56,59 @@ echo "var2 = $var2      var3 = $var3"
 exit 0
 ```
 
-### 
+### 使用 `read` 不设置变量名
+
+```shell
+#!/usr/bin/env bash
+# read-novar.sh
+
+read -rp "Enter a value: " var
+echo "\"var\" = $var"
+
+echo
+
+read -rp "Enter another: " # 没有为 read 提供变量名
+var="$REPLY"               # 读取到的输入会分配给内置变量 $REPLY
+echo "\"var\" = $var"
+
+echo
+
+exit 0
+```
+
+### 使用 `read` 读取多行输入
+
+```shell
+#!/usr/bin/env bash
+
+echo "Enter a string terminated by a \\, then press <ENTER>."
+echo "Then, enter a second string, and again press <ENTER>."
+read var1       # 当读取 $var1 时，输入
+                # first line \
+                # second line 
+echo "var1 = $var1"
+# 此时将会输出 var1 = first line second line
+# 因为对于 \ 结尾的每一行，都会在一下行收到提示，要求继续输入
+
+echo
+
+echo "Enter another string terminated by a \\ , then press <ENTER>."
+read -r var2    # -r 选项可以使 \ 按照字面量读取
+                # 输入 first line \
+echo "var2 = $var2"
+# 此时将会输出 var2 = first line \
+# 也可以使用 \ 为结尾来结束输入了
+
+echo
+
+exit 0
+```
+
+### 使用 `read` 检测功能键
+
+```shell
+
+```
+
+
+
