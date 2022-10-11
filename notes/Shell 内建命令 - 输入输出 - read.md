@@ -216,5 +216,7 @@ exit 0
 ```shell
 $ cat file1 file2 | while read line; do echo "$line"; done
 
-
+$ echo -e "Zhang San\nLi Si" | while read fname lname; do echo "$fname,$lname"; done
+Zhang,San
+Li,Si
 ```
