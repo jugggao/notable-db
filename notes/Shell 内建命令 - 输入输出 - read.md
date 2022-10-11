@@ -176,3 +176,45 @@ fi
 
 exit 0
 ```
+
+### 读取文件赋值给变量
+
+```shell
+#!/usr/bin/env bash
+
+read -r var1 < data-file
+echo "var1 = $var1"
+# var1 被赋值为 data-file 文件中第一行
+
+read -r var2 var3 < data-file
+echo "var2 = $var2  var3=$var3"
+# 此处的 read 非直观行为：
+# 1. 将回到文件开头读取
+# 2. 每个变量设置为相应字符串（用空格分隔），而不是整行文本
+# 3. 最后一个变量将获取文件第一行的其余部分
+# 4. 如果设置的变量大于文件第一行以空格分隔的字符串数量，则多余的变量为空
+
+# 使用循环来解决上诉问题
+while read -r line; do
+    echo "$line"
+done < data-file
+
+# 如果不希望以默认的空格来拆分行，可以使用 $IFS（Internal Field Separator variable）
+echo "List of all users:"
+while IFS=: read -r name _passwd _ _ fullname _; do
+    echo "$name ($fullname)"
+done < /etc/passwd
+
+echo
+echo "\$IFS still $IFS"
+
+exit 0
+```
+
+`echo`、`cat` 通过管道输出到 `read` 也可以来设置变量：
+
+```shell
+$ cat file1 file2 | while read line; do echo "$line"; done
+
+
+```
