@@ -2,24 +2,24 @@
 title: Shell 内建命令 - 输入输出 - read
 tags: [Shell/Command]
 created: 2022-10-10T09:11:19.339Z
-modified: 2022-10-10T09:11:36.077Z
+modified: 2022-10-11T05:51:29.360Z
 ---
 
 # Shell 内建命令 - 输入输出 - `read`
 
-## 作用
+## 1. 作用
 
 从标准输入读取变量的值。也就时说，以交互式从键盘获取输入。
 
-## 用法
+## 2. 用法
 
-### 语法
+### 2.1. 语法
 
 ```
 read [-ers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name ...]
 ```
 
-### 选项
+### 2.2. 选项
 
 ```
 -a array        把读取的数据赋值给数组 array，从下标 0 开始
@@ -29,15 +29,15 @@ read [-ers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] 
 -n nchars       最多接受 nchars 个字符的输入
 -N nchars       只有读取到 nchars 个字符后读取才结束，除非遇到 EOF 或读取超时
 -p prompt       显示 prompt 提示信息
--r              不进行转义
+-r              对反斜杠 \ 不进行转义
 -s              不会在屏幕上显示输入的字符
 -t timeout      设置超时时间，单位为秒
 -u fd           使用文件描述符 fd 作为输入源，而不是标准输入，类似于重定向
 ```
 
-## 用例
+## 3. 用例
 
-### 使用 `read` 为变量赋值
+### 3.1. 使用 `read` 为变量赋值
 
 ```shell
 #!/usr/bin/env bash
@@ -56,7 +56,7 @@ echo "var2 = $var2      var3 = $var3"
 exit 0
 ```
 
-### 使用 `read` 不设置变量名
+### 3.2. 使用 `read` 不设置变量名
 
 ```shell
 #!/usr/bin/env bash
@@ -76,7 +76,7 @@ echo
 exit 0
 ```
 
-### 使用 `read` 读取多行输入
+### 3.3. 使用 `read` 读取多行输入
 
 ```shell
 #!/usr/bin/env bash
@@ -104,7 +104,7 @@ echo
 exit 0
 ```
 
-### 使用 `read` 检测功能键
+### 3.4. 使用 `read` 检测功能键
 
 ```shell
 #!/usr/bin/bash env
@@ -159,7 +159,7 @@ exit $SUCCESS
 ```
 
 
-### 设置 `read` 读取超时时间
+### 3.5. 设置 `read` 读取超时时间
 
 ```shell
 #!/usr/bin/env bash
@@ -177,7 +177,7 @@ fi
 exit 0
 ```
 
-### 读取文件赋值给变量
+### 3.6. 读取文件赋值给变量
 
 ```shell
 #!/usr/bin/env bash
@@ -220,3 +220,40 @@ $ echo -e "Zhang San\nLi Si" | while read fname lname; do echo "$fname,$lname"; 
 Zhang,San
 Li,Si
 ```
+
+## 4. 注意
+
+### 4.1. 禁止转义反斜杠
+
+默认情况下 `read` 在结束之前会解释反斜杠（`\`），而通常情况下期望读取的数据会包括反斜杠（`\`），它是输入字符的一部分，并且没有特殊的转义含义。
+
+因此应该始终使用 `-r` 选项使反斜杠（`\`）不充当转义字符，除非您有充分的理由不这样做。
+
+
+### 4.2. 禁止删除空格
+
+即使使用 `read -r` 时，前导和尾缀空格都会从输入中移除。
+
+```shell
+$ read -r var1
+   test
+$ echo "$var1"
+test
+```
+
+如果您想保留空格，可以清除 `IFS` 将禁用此行为，因此 `IFS= read -r` 通常是最安全的。
+
+```shell
+$ IFS= read -r var2
+   test
+$ echo "$var2"
+   test
+```
+
+## 5. 参考
+
+- https://linux.die.net/abs-guide/internal.html
+- https://www.baeldung.com/linux/read-command
+- https://www.shellcheck.net/wiki/SC2162
+- https://mywiki.wooledge.org/BashFAQ/001
+- https://mywiki.wooledge.org/BashFAQ/089
