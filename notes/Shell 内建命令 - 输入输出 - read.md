@@ -159,4 +159,20 @@ exit $SUCCESS
 ```
 
 
+### 设置 `read` 读取超时时间
 
+```shell
+#!/usr/bin/env bash
+
+TIMELIMIT=4 # 4 seconds
+
+read -r -t $TIMELIMIT variable
+
+if [ -z "$variable" ]; then
+    echo "Timed out, variable still unset."
+else
+    echo "variable = $variable"
+fi
+
+exit 0
+```
