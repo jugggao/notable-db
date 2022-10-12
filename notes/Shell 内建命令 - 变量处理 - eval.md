@@ -2,20 +2,20 @@
 title: Shell 内建命令 - 变量处理 - eval
 tags: [Shell/Command]
 created: 2022-10-12T06:03:26.460Z
-modified: 2022-10-12T07:18:48.851Z
+modified: 2022-10-12T08:38:15.363Z
 ---
 
 # Shell 内建命令 - 变量处理 - `eval`
 
-## 用法
+## 1. 用法
 
-### 语法
+### 1.1. 语法
 
 ```shell
 eval [arg ...]
 ```
 
-### 作用
+### 1.2. 作用
 
 `eval` 获取其参数，将它们用空格连接起来，其中包含的任何变量或表达式都会被展开，然后再当前执行环境中将生成的字符串作为 Bash 代码执行。对于从命令行或脚本中生成代码很有用。
 
@@ -23,9 +23,9 @@ eval [arg ...]
 
 `eval` 在 Bash 中的工作方式与大多数其他具有 `eval` 功能的语言基本相同。
 
-## 用例
+## 2. 用例
 
-### 展开变量或表达式后再执行
+### 2.1. 展开变量后再执行命令
 
 `eval` 先展开参数中的变量或表达式，然后再执行此命令。
 
@@ -49,6 +49,8 @@ $ $show_process
 2845693 ?        S      0:00 nginx: worker process
 ```
 
+### 2.2. 展开表达式后再执行命令
+
 ```shell
 $ ssh-agent -s
 SSH_AUTH_SOCK=/tmp/ssh-lSoBMuHdwoP8/agent.2131386; export SSH_AUTH_SOCK;
@@ -61,5 +63,64 @@ $ eval $(ssh-agent -s)
 Agent pid 2131483
 ```
 
+```shell
+#!/usr/bin/env bash
+
+FILE="/tmp/test.mp4"
+TMP="/tmp/tmp.mp4"
+
+declare -i streams_stream_0_width
+declare -i streams_stream_0_height
+
+OUT_WIDTH=720
+OUT_HEIGHT=480
+
+# 获取视频的分辨率
+eval "$(ffprobe -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height,width $FILE)"
+# 直接执行 ffprobe -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height,width ${FILE} 会输出：
+# streams_stream_0_width=1920
+# streams_stream_0_height=1080
+# 使用 'eval' 直接执行了输出的表达式
+IN_WIDTH=$streams_stream_0_width
+IN_HEIGHT=$streams_stream_0_height
+
+# 获取实际分辨率和所需分辨率的差值
+W_DIFF=$((OUT_WIDTH - IN_WIDTH))
+H_DIFF=$((OUT_HEIGHT - IN_HEIGHT))
+
+# 使用 ffmpeg 调整视频大小
+CROP_SIDE="n"
+if [ $W_DIFF -lt $H_DIFF ]; then
+    SCALE="-2:$OUT_HEIGHT"
+    CROP_SIDE="w"
+else
+    SCALE="$OUT_WIDTH:-2"
+    CROP_SIDE="h"
+fi
+ffmpeg -i $FILE -vf scale=$SCALE $TMP
+
+eval "$(ffprobe -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height,width $TMP)"
+IN_WIDTH=${streams_stream_0_width}
+IN_HEIGHT=${streams_stream_0_height}
+
+# 计算剪裁的尺寸
+if [ "z${CROP_SIDE}" = "zh" ]; then
+    DIFF=$((IN_HEIGHT - OUT_HEIGHT))
+    CROP="in_w:in_h-$DIFF"
+elif [ "z${CROP_SIDE}" = "zw" ]; then
+    DIFF=$((IN_WIDTH - OUT_WIDTH))
+    CROP="in_w-$DIFF:in_h"
+fi
+
+# 剪裁
+ffmpeg -i $TMP -filter:v "crop=${CROP}" "$OUT"
+```
+
+## 3. 参考
+
+- https://wiki.bash-hackers.org/commands/builtin/eval
+- https://www.cnblogs.com/klb561/p/10834592.html
+- https://unix.stackexchange.com/questions/23111/what-is-the-eval-command-in-bash
+- https://unix.stackexchange.com/questions/190431/convert-a-video-to-a-fixed-screen-size-by-cropping-and-resizing/192021#192021
 
 
