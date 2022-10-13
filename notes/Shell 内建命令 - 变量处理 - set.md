@@ -17,7 +17,7 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
 
 ### 作用
 
-显示或设置 Shell 特性及 Shell 变量
+显示或设置 Shell 特性及 Shell 变量。
 
 `set` 命令
 
