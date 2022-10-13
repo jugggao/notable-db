@@ -37,16 +37,37 @@ $ eval ls $pipe wc -l
 29
 ```
 
+案例：输出命令行参数
+
 ```shell
-$ process=nginx
-$ show_process="eval ps ax | grep $process"
-$ $show_process
-2131281 pts/0    S+     0:00 grep nginx
-2845689 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
-2845690 ?        S      0:00 nginx: worker process
-2845691 ?        S      0:00 nginx: worker process
-2845692 ?        S      0:00 nginx: worker process
-2845693 ?        S      0:00 nginx: worker process
+#!/usr/bin/env bash
+
+# 调用脚本时跟一些命令行参数
+# 例如：sh echo-params.sh first second third fourth fifth
+
+params=$# # 命令行参数数量
+param=1   # 从第一个命令行参数开始
+
+while [ "$param" -le "$params" ]; do
+    echo -n "Command line parameter "
+    echo -n \$$param # 仅显示变量名，例如 $1, $2, $3 等
+                     # \$ 转义第一个 $，所以仅显示字面量
+    echo -n " = "
+    eval echo \$$param # 显示变量的值
+                       # 'eval' 会强制展开变量的值然后再执行
+    ((param++))
+done
+
+exit $?
+```
+
+```shell
+$ sh eval_echo_params.sh first second third fourth fifth
+Command line parameter $1 = first
+Command line parameter $2 = second
+Command line parameter $3 = third
+Command line parameter $4 = fourth
+Command line parameter $5 = fifth
 ```
 
 ### 2.2. 展开表达式后再执行命令
@@ -115,6 +136,22 @@ fi
 # 剪裁
 ffmpeg -i $TMP -filter:v "crop=${CROP}" "$OUT"
 ```
+
+## 将变量作为命令使用
+
+```shell
+$ process=nginx
+$ show_process="eval ps ax | grep $process"
+$ $show_process
+2131281 pts/0    S+     0:00 grep nginx
+2845689 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+2845690 ?        S      0:00 nginx: worker process
+2845691 ?        S      0:00 nginx: worker process
+2845692 ?        S      0:00 nginx: worker process
+2845693 ?        S      0:00 nginx: worker process
+```
+
+
 
 ## 3. 参考
 
