@@ -72,6 +72,31 @@ Command line parameter $5 = fifth
 
 ### 2.2. 展开表达式后再执行命令
 
+案例：`rot13.sh` 的 `eval` 版本
+
+```shell
+#!/usr/bin/env bash
+# 使用 'eval' 版本的 rot13.sh
+# 与原版的 rot13.13 做比较
+# 原版的 rot13.sh：
+# cat "$@" | tr 'a-zA-Z' 'n-za-mN-ZA-M'   # "a" goes to "n", "b" to "o", etc.
+
+setvar_rot_13() {
+    local varname=$1 varvalue=$2
+    eval "$varname"="$(echo "$varvalue" | tr a-zA-Z n-za-mN-ZA-M)"
+}
+
+setvar_rot_13 var "foobar"
+echo "$var"
+
+setvar_rot_13 var "$var"
+echo "$var"
+
+exit 0
+```
+
+案例：视频处理
+
 ```shell
 $ ssh-agent -s
 SSH_AUTH_SOCK=/tmp/ssh-lSoBMuHdwoP8/agent.2131386; export SSH_AUTH_SOCK;
@@ -137,7 +162,7 @@ fi
 ffmpeg -i $TMP -filter:v "crop=${CROP}" "$OUT"
 ```
 
-## 将变量作为命令使用
+## 3. 将变量作为命令使用
 
 ```shell
 $ process=nginx
@@ -153,7 +178,7 @@ $ $show_process
 
 
 
-## 3. 参考
+## 4. 参考
 
 - https://wiki.bash-hackers.org/commands/builtin/eval
 - https://www.cnblogs.com/klb561/p/10834592.html
