@@ -2,7 +2,7 @@
 title: Shell 内建命令 - 变量处理 - eval
 tags: [Shell/Command]
 created: 2022-10-12T06:03:26.460Z
-modified: 2022-10-12T08:38:15.363Z
+modified: 2022-10-14T02:45:59.363Z
 ---
 
 # Shell 内建命令 - 变量处理 - `eval`
@@ -162,7 +162,7 @@ fi
 ffmpeg -i $TMP -filter:v "crop=${CROP}" "$OUT"
 ```
 
-## 3. 将变量作为命令使用
+### 2.3. 将变量作为命令使用
 
 ```shell
 $ process=nginx
@@ -178,7 +178,7 @@ $ $show_process
 
 
 
-## 4. 参考
+## 3. 参考
 
 - https://wiki.bash-hackers.org/commands/builtin/eval
 - https://www.cnblogs.com/klb561/p/10834592.html
