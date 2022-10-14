@@ -176,13 +176,27 @@ $ $show_process
 2845693 ?        S      0:00 nginx: worker process
 ```
 
+## 3. 注意
+
+### 3.1. `eval ` 安全问题
+
+`eval` 命令会导致代码被扫描解析两次而不是一次。
+
+例如：
+
+```shell
+DANGEROUS=">foo"
+eval echo $DANGEROUS
+```
+
+会导致直接创建一个文件。
 
 
-## 3. 参考
+## 4. 参考
 
 - https://wiki.bash-hackers.org/commands/builtin/eval
 - https://www.cnblogs.com/klb561/p/10834592.html
 - https://unix.stackexchange.com/questions/23111/what-is-the-eval-command-in-bash
 - https://unix.stackexchange.com/questions/190431/convert-a-video-to-a-fixed-screen-size-by-cropping-and-resizing/192021#192021
-
-
+- https://stackoverflow.com/questions/50728845/can-ifs-be-changed-locally-in-a-bash-function
+- http://mywiki.wooledge.org/BashFAQ/048
