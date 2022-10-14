@@ -87,5 +87,21 @@ done
 exit $?
 ```
 
-### 注意
+## 3. 注意
+
+### 3.1. 使用 `IFS` 输出与原始输出
+
+`echo` 展开变量替换或者命令替换时，如果未使用双引号引用，则会使用 `IFS` 来连接输出内容。如果想输出原始内容，则需要加上双引号。
+
+```shell
+$ echo $(ls -l)
+total 16 drwxr-xr-x 3 3434 3434 4096 2022-06-22 16:32 alertmanager drwxr-xr-x 3 root root 4096 2022-07-07 13:58 cni drwx--x--x 4 root root 4096 2022-07-11 15:48 containerd drwxr-xr-x 2 3434 3434 4096 2021-12-05 19:15 node_exporter
+
+$ echo "$(ls -l)"
+total 16
+drwxr-xr-x 3 3434 3434 4096 2022-06-22 16:32 alertmanager
+drwxr-xr-x 3 root root 4096 2022-07-07 13:58 cni
+drwx--x--x 4 root root 4096 2022-07-11 15:48 containerd
+drwxr-xr-x 2 3434 3434 4096 2021-12-05 19:15 node_exporter
+```
 
