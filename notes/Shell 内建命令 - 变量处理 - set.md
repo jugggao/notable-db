@@ -17,7 +17,20 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
 
 ### 作用
 
-显示或设置 Shell 特性及 Shell 变量。
+`set` 主要作用有两个：
+
+- 将位置参数设置为 `arg ...`
+- 通过选项（短选项和长选项）设置 Shell 属性
+
+### 选项
+
+**短选项**：
+
+```
+-a      
+```
+
+
 
 
 
