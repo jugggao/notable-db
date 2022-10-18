@@ -88,11 +88,148 @@ COLUMNS=178
 
 ## 设置位置参数示例
 
-### 使用 `set ` 配置位置参数
+### 使用 `set ` 分配位置参数
 
 ```shell
+#!/usr/bin/env bash
 
+variable="one two three four five"
+read -ra variable_array <<< "$variable"
+set -- "${variable_array[@]}"
+# 设置位置参数分配 $variable 中的内容
+
+first_param=$1
+second_param=$2
+shift 2 # 移除前两个位置参数
+remaining_params="$*"
+
+echo "first parameter = $first_param"           # one
+echo "second parameter = $second_param"         # two
+echo "remaining parameters = $remaining_params" # three four five
+
+# 重新设置位置变量
+set -- "${variable_array[@]}"
+first_param=$1
+second_param=$2
+echo "first parameter = $first_param"   # one
+echo "second parameter = $second_param" # two
+
+# 释放位置变量
+set --
+first_param=$1
+second_param=$2
+echo "first parameter = $first_param"   # (null value)
+echo "second parameter = $second_param" # (null value)
+
+exit 0
 ```
+
+### 使用 `set` 将命令输出作为位置参数
+
+```bash
+#!/usr/bin/env bash
+# script "set_test"
+# 使用三个命令行参数调用此脚本
+# 例如：sh set-test one two three
+
+echo "Positional parameters before set \$(uname -a):"
+echo "Command-line argument #1 = $1"
+echo "Command-line argument #2 = $2"
+echo "Command-line argument #3 = $3"
+
+# 以下两个步骤等同于 set $(uname -a)，建议使用以下的步骤
+read -ra uname_array < <(uname -a)
+set -- "${uname_array[@]}"
+
+echo "$_"
+
+echo "Positional parameter after set \$(uname -a):"
+# $1, $2 $3 等重新赋值为数组中的元素
+echo "Field #1 of 'uname -a' = $1"
+echo "Field #2 of 'uname -a' = $2"
+echo "Field #3 of 'uname -a' = $3"
+echo "Field #4 of 'uname -a' = $4"
+echo "Field #5 of 'uname -a' = $5"
+echo "Field #6 of 'uname -a' = $6"
+echo "Field #7 of 'uname -a' = $7"
+echo "Field #8 of 'uname -a' = $8"
+echo "Field #9 of 'uname -a' = $9"
+echo "Field #10 of 'uname -a' = ${10}"
+echo "Field #11 of 'uname -a' = ${11}"
+echo ---
+echo "$_"
+
+exit 0
+```
+
+### 反转脚本参数
+
+```shell
+#!/usr/bin/env bash
+set -- "a b" "c" "d e"
+
+OIFS=$IFS
+IFS=:
+
+until [ $# -eq 0 ]; do
+    echo "### k0 = "$k"" # $k 赋值之前
+    k=$1:$k              # 将位置参数附加到 $k 之前
+    echo "### k = "$k""  # $k 赋值之后
+    shift
+done
+
+# echo
+read -ra params <<< "$k"
+echo
+set -- "${params[@]}"
+echo -
+echo $#
+echo -
+echo
+
+for i; do     # 省略 'in list' 则会循环位置参数
+    echo "$i" # 查看新的位置参数
+done
+
+IFS=$OIFS
+exit 0
+```
+
+执行此脚本：
+
+```shell
+$ sh revposparams.sh 
+### k0 = 
+### k = a b 
+### k0 = a b 
+### k = c a b 
+### k0 = c a b 
+### k = d e c a b 
+
+-
+3
+-
+
+d e
+c
+a b
+```
+
+## 设置子 Shell 环境的运行参数
+
+### 脚本中命令出错即终止执行
+
+脚本里有运行失败的命令（返回值非 0），Bash 会默认继续执行后面的命令。
+
+```shell
+#!/usr/bin/env bash
+
+cd notexistdir
+ls
+```
+
+
+
 
 
 
