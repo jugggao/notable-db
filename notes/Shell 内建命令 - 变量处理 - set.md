@@ -225,11 +225,71 @@ a b
 #!/usr/bin/env bash
 
 cd notexistdir
-ls
+echo "The current directory is $(pwd)"
 ```
 
+使用 `set -e` 可使脚本只要发生错误，就终止执行。
 
+```shell
+#!/usr/bin/env bash
+set -e
 
+cd notexistdir
+echo "The current directory is $(pwd)"
+```
+
+以上代码执行时不会在执行 `echo` 指令。
+
+如果希望在某些命令失败的情况下继续执行，可以临时关闭此属性。
+
+```shell
+set +e
+command1
+command2
+set -e
+```
+
+还有一种办法是使用 `command || true`，使命令执行失败后也不会返回非 `0`。
+
+```shell
+#!/usr/bin/env bash
+set -e
+
+cd notexistdir || true
+echo "The current directory is $(pwd)"
+```
+
+### 脚本管道命令出错即终止运行
+
+`set -e` 有一个例外情况，就是不适用于管道命令。因为 Bash 会把管道命令中最后一个子命令的返回值作为整个命令的返回值。也就是说，只要最后一个命令不失败，管道命令总是会执行成功，因此它后面的命令依然会执行。
+
+```shell
+#!/bin/bash
+set -e
+
+cd notexistdir | echo a
+echo "The current directory is $(pwd)"
+```
+
+使用 `set -o pipefail` 可以使管道命令中只要一个子命令执行失败，整个管道命令就失败，脚本就会终止执行。
+
+```shell
+#!/bin/bash
+set -eo pipefail
+
+cd notexistdir | echo a
+echo "The current directory is $(pwd)"
+```
+
+运行后结果如下：
+
+```shell
+$ sh script.sh
+a
+set_e.sh: line 4: cd: notexistdir: No such file or directory
+```
+
+可以看到，最后的 `echo` 没有执行。
 
 
 
