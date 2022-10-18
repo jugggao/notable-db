@@ -17,11 +17,11 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
 
 ### 作用
 
-`set` 主要作用有两个：
+`set` 主要有以下作用：
 
+- 显示系统中已初始化的环境变量和其他变量
 - 将位置参数设置为 `arg ...`
 - 通过选项（短选项和长选项）设置 Shell 属性
-- 显示系统中已初始化的环境变量和其他变量
 
 ### 选项
 
@@ -59,10 +59,40 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
     emacs           使用 emacs 样式命令行编辑界面（此模式在交互式 Shell 才会用到，脚本中不会使用）
     history         开启历史命令（此模式在交互式 Shell 才会用到，脚本中不会使用）
     ignoreeof       开启后读取 EOF interactive-comments 时不会退出，效果与命令 IGNOREEOF=10 相同（避免使用此选项，使用后者来配置）
-    pipefail        
-
+    pipefail        开启后，只要一个子命令失败，整个管道命令就失败，脚本就会退出
+    posix           开启后，以 POSIX 模式运行
+    vi              启用 vi 样式的命令行编辑界面（此模式在交互式 Shell 才会用到，脚本中不会使用）
 ```
 
+## 查看系统配置示例
+
+不带任何选项或参数调用 `set` 会列出所有已初始化的环境变量和其他变量。
+
+```shell
+$ set
+BASH=/bin/bash
+BASHOPTS=checkwinsize:cmdhist:complete_fullquote:expand_aliases:extglob:extquote:force_fignore:globasciiranges:histappend:interactive_comments:login_shell:progcomp:promptvars:sourcepath
+BASH_ALIASES=()
+BASH_ARGC=([0]="0")
+BASH_ARGV=()
+BASH_CMDS=()
+BASH_COMPLETION_VERSINFO=([0]="2" [1]="11")
+BASH_LINENO=()
+BASH_REMATCH=()
+BASH_SOURCE=()
+BASH_VERSINFO=([0]="5" [1]="1" [2]="4" [3]="1" [4]="release" [5]="x86_64-pc-linux-gnu")
+BASH_VERSION='5.1.4(1)-release'
+COLUMNS=178
+...
+```
+
+## 设置位置参数示例
+
+### 使用 `set ` 配置位置参数
+
+```shell
+
+```
 
 
 
