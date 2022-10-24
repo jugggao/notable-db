@@ -570,4 +570,7 @@ ls: cannot access '*file': No such file or directory
 
 可以看到，`set -f` 后面的 `ls` 命令没有使用通配符来搜索文件
 
-## 
+## 5. 参考
+
+- `https://linux.die.net/abs-guide/options.html`
+- `https://wangdoc.com/bash/set.html`
