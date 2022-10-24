@@ -7,15 +7,15 @@ modified: 2022-10-13T03:10:34.462Z
 
 # Shell 内建命令 - 变量处理 - `set`
 
-## 用法
+## 1. 用法
 
-### 语法
+### 1.1. 语法
 
 ```shell
 set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
 ```
 
-### 作用
+### 1.2. 作用
 
 `set` 主要有以下作用：
 
@@ -23,7 +23,7 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
 - 将位置参数设置为 `arg ...`
 - 通过选项（短选项和长选项）设置 Shell 属性
 
-### 选项
+### 1.3. 选项
 
 `set` 分为长选项和短选项，长选项可与 `-o` 一起使用。
 
@@ -64,7 +64,7 @@ set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
     vi              启用 vi 样式的命令行编辑界面（此模式在交互式 Shell 才会用到，脚本中不会使用）
 ```
 
-## 查看系统配置示例
+## 2. 查看系统配置示例
 
 不带任何选项或参数调用 `set` 会列出所有已初始化的环境变量和其他变量。
 
@@ -86,9 +86,9 @@ COLUMNS=178
 ...
 ```
 
-## 设置位置参数示例
+## 3. 设置位置参数示例
 
-### 使用 `set ` 分配位置参数
+### 3.1. 使用 `set ` 分配位置参数
 
 ```shell
 #!/usr/bin/env bash
@@ -124,7 +124,7 @@ echo "second parameter = $second_param" # (null value)
 exit 0
 ```
 
-### 使用 `set` 将命令输出作为位置参数
+### 3.2. 使用 `set` 将命令输出作为位置参数
 
 ```bash
 #!/usr/bin/env bash
@@ -162,7 +162,7 @@ echo "$_"
 exit 0
 ```
 
-### 反转脚本参数
+### 3.3. 反转脚本参数
 
 ```shell
 #!/usr/bin/env bash
@@ -215,9 +215,9 @@ c
 a b
 ```
 
-## 设置子 Shell 环境的运行参数
+## 4. 设置子 Shell 环境的运行参数
 
-### 脚本中命令出错即终止执行
+### 4.1. `set -e` - 脚本中命令出错即终止执行
 
 脚本里有运行失败的命令（返回值非 0），Bash 会默认继续执行后面的命令。
 
@@ -259,7 +259,7 @@ cd notexistdir || true
 echo "The current directory is $(pwd)"
 ```
 
-### 脚本管道命令出错即终止运行
+### 4.2. `set -o pipefail` - 脚本管道命令出错即终止运行
 
 `set -e` 有一个例外情况，就是不适用于管道命令。因为 Bash 会把管道命令中最后一个子命令的返回值作为整个命令的返回值。也就是说，只要最后一个命令不失败，管道命令总是会执行成功，因此它后面的命令依然会执行。
 
@@ -292,7 +292,7 @@ set_e.sh: line 4: cd: notexistdir: No such file or directory
 可以看到，最后的 `echo` 没有执行。
 
 
-### 脚本中函数能够继承 `trap` 命令
+### 4.3. `set -E` - 脚本中函数能够继承 `trap` 命令
 
 一旦设置了 `set -e`，会导致函数内的错误不会被 `trap` 命令捕获。`set -E` 可以纠正这个行为，使函数也能继承 `trap` 命令。
 
@@ -342,7 +342,7 @@ set_flags.sh: line 9: foo: command not found
 ERR trap fired!
 ```
 
-### 脚本中使用不存在的变量即终止运行
+### 4.4. `set -u` - 脚本中使用不存在的变量即终止运行
 
 执行脚本时，如果遇到不存在的变量，Bash 默认忽略它。
 
@@ -381,10 +381,193 @@ set_flags.sh: line 5: b: unbound variable
 
 可以看到，脚本报错，并且不再执行后面的语句。
 
-### 调试脚本时输出执行的命令
+### 4.5. `set -v` - 调试脚本时回显输入的命令
+
+`set -v` 在执行脚本时会回显所输入的命令，打印的是命令本身，不进行任何扩展。
+
+```shell
+#!/usr/bin/env bash
+
+set -v
+n=3
+while [ $n -gt 0 ]; do
+    n=$((n - 1))
+    echo $n
+    sleep 1
+done
+
+echo -e "\n---\n"
+
+for ((i = 3; i >= 0; i--)); do
+    echo $((i * 2))
+    sleep 1
+done
+
+exit 0
+```
+
+输出结果如下：
+
+```shell
+$ sh set_flags.sh 
+n=3
+while [ $n -gt 0 ]; do
+    n=$((n - 1))
+    echo $n
+    sleep 1
+done
+2
+1
+0
+
+echo -e "\n---\n"
+
+---
+
+
+for ((i = 3; i >= 0; i--)); do
+    echo $((i * 2))
+    sleep 1
+done
+6
+4
+2
+0
+
+exit 0
+```
+
+### 4.6. `set -x` - 调试脚本时打印具体执行的命令及命令参数
 
 默认情况下，脚本执行后只输出结果，没有其他内容。如果多个命令连续执行，它们的运行结果就会连续输出。有时候会分不清，某一段内容时什么命令产生的。
 
-`set -x` 用来在运行结果之前，先输出执行那一行的命令。
+`set -x` 用来在运行结果之前，先输出执行那一行的命令。与 `set -v` 不同的是，`set -x` 会打印具体执行的命令，以及命令的参数。这些参数是经过 Bash 扩展后的参数，可以方便看到各个变量值扩展后的结果是什么、某个变量是否扩展为空导致参数个数发生变化等等。
 
+```shell
+#!/usr/bin/env bash
 
+set -x
+n=3
+while [ $n -gt 0 ]; do
+    n=$((n - 1))
+    echo $n
+    sleep 1
+done
+set +x
+
+echo -e "\n---\n"
+
+set -x
+for ((i = 3; i >= 0; i--)); do
+    echo $((i * 2))
+    sleep 1
+done
+set +x
+
+exit 0
+
+```
+
+输出结果如下：
+
+```shell
+$ sh set_flags.sh 
++ n=3
++ '[' 3 -gt 0 ']'
++ n=2
++ echo 2
+2
++ sleep 1
++ '[' 2 -gt 0 ']'
++ n=1
++ echo 1
+1
++ sleep 1
++ '[' 1 -gt 0 ']'
++ n=0
++ echo 0
+0
++ sleep 1
++ '[' 0 -gt 0 ']'
++ set +x
+
+---
+
++ (( i = 3 ))
++ (( i >= 0 ))
++ echo 6
+6
++ sleep 1
++ (( i-- ))
++ (( i >= 0 ))
++ echo 4
+4
++ sleep 1
++ (( i-- ))
++ (( i >= 0 ))
++ echo 2
+2
++ sleep 1
++ (( i-- ))
++ (( i >= 0 ))
++ echo 0
+0
++ sleep 1
++ (( i-- ))
++ (( i >= 0 ))
++ set +x
+```
+
+上面的例子中，在调试过程中我们只对特定的代码打开命令输出。
+
+### 4.7. `set -C` - 禁止覆盖相同名称的现有文件
+
+`set -C` 可以防止使用重定向运算符 `>` 覆盖已经存在的文件。
+
+```shell
+#!/usr/bin/env bash
+
+echo 'New file' > myfile
+
+set -C
+echo 'Add context to file' >> myfile
+echo 'An existing file' > myfile
+
+exit 0
+```
+
+输出结果如下：
+
+```shell
+$ sh set_flags.sh 
+set_flags.sh: line 7: myfile: cannot overwrite existing file
+```
+
+### 4.8. `set -f` - 禁止使用通配符进行文件名扩展
+
+默认情况下，我们可以使用通配符例如（`?`、`*` 或 `[]`）搜索文件。Bash 使用指定的通配符生成模式并将它们与文件名进行匹配。此功能成为 [globbing](https://en.wikipedia.org/wiki/Glob_(programming))。
+
+`set -f` 表示不对通配符进行文件名扩展。
+
+```shell
+#!/usr/bin/env bash
+
+ls -- *file
+
+set -f
+ls -- *file
+
+exit 0
+```
+
+输出结果如下：
+
+```shell
+$ sh set_flags.sh 
+myfile
+ls: cannot access '*file': No such file or directory
+```
+
+可以看到，`set -f` 后面的 `ls` 命令没有使用通配符来搜索文件
+
+## 
