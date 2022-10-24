@@ -291,8 +291,20 @@ set_e.sh: line 4: cd: notexistdir: No such file or directory
 
 可以看到，最后的 `echo` 没有执行。
 
+### 脚本中使用不存在的变量即终止运行
 
+执行脚本时，如果遇到不存在的变量，Bash 默认忽略它。
 
+```shell
+#!/bin/bash
 
+a='Bash'
+echo $a $b
+```
 
+运行时，执行结果如下：
 
+```shell
+$ sh script.sh
+Bash
+```
