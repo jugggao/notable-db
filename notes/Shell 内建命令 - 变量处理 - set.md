@@ -291,6 +291,57 @@ set_e.sh: line 4: cd: notexistdir: No such file or directory
 
 可以看到，最后的 `echo` 没有执行。
 
+
+### 脚本中函数能够继承 `trap` 命令
+
+一旦设置了 `set -e`，会导致函数内的错误不会被 `trap` 命令捕获。`set -E` 可以纠正这个行为，使函数也能继承 `trap` 命令。
+
+```shell
+#!/usr/bin/env bash
+set -e
+
+trap "echo ERR trap fired!" ERR
+
+myfunc() {
+    # 'foo' 使一个不存在的命令
+    foo
+}
+
+myfunc
+```
+
+运行结果如下：
+
+```shell
+$ sh set_flags.sh 
+set_flags.sh: line 9: foo: command not found
+```
+
+由于设置了 `set -e`，函数内部的报错并没有被 `trap` 命令捕获，需要加上 `set -E` 参数才可以。
+
+```shell
+#!/usr/bin/env bash
+
+set -eE
+
+trap "echo ERR trap fired!" ERR
+
+myfunc() {
+    # 'foo' 使一个不存在的命令
+    foo
+}
+
+myfunc
+```
+
+执行脚本，可以看到 `trap` 命令生效了：
+
+```shell
+$ sh set_flags.sh 
+set_flags.sh: line 9: foo: command not found
+ERR trap fired!
+```
+
 ### 脚本中使用不存在的变量即终止运行
 
 执行脚本时，如果遇到不存在的变量，Bash 默认忽略它。
@@ -305,6 +356,35 @@ echo $a $b
 运行时，执行结果如下：
 
 ```shell
-$ sh script.sh
+$ sh set_flags.sh
 Bash
 ```
+
+可以看到，Bash 会忽略未分配的变量而不会出现任何错误。
+
+`set -u` 就用来改变这种行为，使脚本遇到不存在的变量会报错，并停止执行。
+
+```shell
+#!/bin/bash
+set -u
+
+a='Bash'
+echo $a $b
+```
+
+运行结果如下：
+
+```shell
+$ sh set_flags.sh 
+set_flags.sh: line 5: b: unbound variable
+```
+
+可以看到，脚本报错，并且不再执行后面的语句。
+
+### 调试脚本时输出执行的命令
+
+默认情况下，脚本执行后只输出结果，没有其他内容。如果多个命令连续执行，它们的运行结果就会连续输出。有时候会分不清，某一段内容时什么命令产生的。
+
+`set -x` 用来在运行结果之前，先输出执行那一行的命令。
+
+
