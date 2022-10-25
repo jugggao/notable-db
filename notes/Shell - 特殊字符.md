@@ -78,14 +78,51 @@ fi; echo "File test complete."
   find ~/ -name 'core*' -exec rm {} \;
   ```
 
-## `;;` - `case` 条件语句终止符
+## `;;` `;&` `;;&` - `case` 条件语句终止符
 
-```shell
-case "$variable" in
-  abc)  echo "\$variable = abc" ;;
-  xyz)  echo "\$variable = xyz" ;;
-esac
-```
+- `;;` 第一个模式匹配之后不会尝试后续匹配。
+
+  ```shell
+  #!/usr/bin/env bash
+
+  foo() {
+      case $1 in
+          3)
+              echo "Level Three"
+              ;;
+          2)
+              echo "Level Two"
+              ;;
+          1)
+              echo "Level one"
+              ;;
+            *)
+            echo "Level "
+      esac
+  }
+
+  echo 1:
+  foo 1
+  echo 2:
+  foo 2
+  echo 3:
+  foo 3
+
+  exit 0
+  ```
+
+  输出结果如下。
+
+  ```
+  $ sh case_terminator.sh
+  1:
+  Level one
+  2:
+  Level Two
+  3:
+  Level Three
+  ```
+
+- `;&` 第一个模式匹配之后会强制执行之后的子句
 
 ## `;;&, ;&`
-
