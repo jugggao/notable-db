@@ -80,7 +80,7 @@ fi; echo "File test complete."
 
 ## `;;` `;&` `;;&` - `case` 条件语句终止符
 
-- `;;` 第一个模式匹配之后不会尝试后续匹配。
+- `;;` - 第一个模式匹配之后不会尝试后续匹配。
 
   ```shell
   #!/usr/bin/env bash
@@ -96,8 +96,9 @@ fi; echo "File test complete."
           1)
               echo "Level one"
               ;;
-            *)
-            echo "Level "
+          *)
+              echo "Level *"
+              ;;
       esac
   }
 
@@ -111,7 +112,7 @@ fi; echo "File test complete."
   exit 0
   ```
 
-  输出结果如下。
+  执行结果如下：
 
   ```
   $ sh case_terminator.sh
@@ -123,6 +124,144 @@ fi; echo "File test complete."
   Level Three
   ```
 
-- `;&` 第一个模式匹配之后会强制执行之后的子句
+- `;&` - 第一个模式匹配之后会继续执行之后的子句中的命令
 
-## `;;&, ;&`
+  ```shell
+  #!/usr/bin/env bash
+
+  foo() {
+      case $1 in
+          3)
+              echo "Level Three"
+              ;&
+          2)
+              echo "Level Two"
+              ;&
+          1)
+              echo "Level one"
+              ;&
+          *)
+              echo "Level *"
+              ;&
+      esac
+  }
+
+  echo 1:
+  foo 1
+  echo 2:
+  foo 2
+  echo 3:
+  foo 3
+
+  exit 0
+  ```
+
+  执行结果如下：
+
+  ```shell
+  $ sh case_terminator.sh
+  1:
+  Level one
+  Level *
+  2:
+  Level Two
+  Level one
+  Level *
+  3:
+  Level Three
+  Level Two
+  Level one
+  Level *
+  ```
+
+- `;;&` - 第一个模式匹配成功后会继续测试之后的子句，执行全部匹配成功子句的命令
+
+  ```shell
+  #!/usr/bin/env bash
+
+  foo() {
+      case $1 in
+          *3*)
+              echo "Level Three"
+              ;;&
+          *2*)
+              echo "Level Two"
+              ;;&
+          *1*)
+              echo "Level one"
+              ;;&
+          *)
+              echo "Level *"
+              ;;&
+      esac
+  }
+
+  echo 12:
+  foo 12
+  echo 13:
+  foo 13
+  echo 23:
+  foo 23
+  echo 123:
+  foo 123
+
+  exit 0
+  ```
+
+  执行结果如下：
+
+  ```shell
+  $ sh case_terminator.sh
+  12:
+  Level Two
+  Level one
+  Level *
+  13:
+  Level Three
+  Level one
+  Level *
+  23:
+  Level Three
+  Level Two
+  Level *
+  123:
+  Level Three
+  Level Two
+  Level one
+  Level *
+  ```
+
+## `.` - 句点命令、隐藏文件头、当前目录、句点匹配符
+
+- 当 `.` 作为命令使用时等价于 `source` 命令，这是一个 Bash 的内建命令。
+
+  ```shell
+  . /etc/environment
+  ```
+
+- 当 `.` 为文件名的开头，则说明此文件时隐藏文件。
+
+- 当 `.` 出现在目录中时，`.` 表示当前工作目录，`..` 表示上级目录。
+
+  ```shell
+  cd ..
+  cp junk/* .
+  ```
+
+- 当 `.` 出现在正则表达式中，`.` 表示匹配任意单个字符。
+
+## `"` - 部分引用
+
+在字符串中保留大部分特殊字符。
+
+## `'` - 全引用
+
+在字符串中保留所有特殊字符。
+
+## `,` - 逗号运算符。
+
+`,` 将一系列算术表达式串联在一起。算术表达式依次被执行，但只返回最后一个表达式的值。
+
+```shell
+
+```
