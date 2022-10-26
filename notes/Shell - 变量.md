@@ -2,7 +2,7 @@
 title: Shell - 变量
 tags: [Shell]
 created: 2022-10-25T09:14:13.198Z
-modified: 2022-10-25T09:53:44.169Z
+modified: 2022-10-26T10:00:40.003Z
 ---
 
 # Shell - 变量
@@ -91,8 +91,17 @@ f=$((5 * 7))        # 变量值可以是算术运算的结果
 
 ## 读取变量
 
-读取变量的时候，在变量名前面加上 `$`（取值符）
+读取变量的时候，在变量名前面加上 `$`（取值符）来进行变量读取。
 
-### 读取变量形式
+```shell
+vairable1=23
+echo $vairable1
+```
 
--
+实际上，`$variable` 这种写法是 `${variable}` 的简化形式。在某些情况下，使用 `$variable` 写法会造成语法错误，使用完整形式会更好。
+
+```shell
+echo "$USER_on_$HOSTNAME"     # ✕ 读取变量的时候，Bash 会先读取 USER_on_ 这个变量，这个变量是不存在的
+echo "${USER}_on_${HOSTNAME}" # ✓ 用 ${USER} 才会正常读取 USER 变量
+```
+
