@@ -89,7 +89,19 @@ e=$(ls -l)          # 变量值可以是命令替换（命令执行的结果）
 f=$((5 * 7))        # 变量值可以是算术运算的结果
 ```
 
-## 读取变量
+一个未被赋值或未初始化的变量拥有空值（null value），但在算术运算中使用未赋值变量是可行的，会被作为 0 处理。
+
+```shell
+if [ -z "$unassigned" ]; then
+    echo "\$unassigned is NULL."
+fi
+
+echo "$uninitialized" # 空行
+((uninitialized += 5))
+echo "$uninitialized" # 5
+```
+
+### 读取变量
 
 读取变量的时候，在变量名前面加上 `$`（取值符）来进行变量读取。
 
@@ -116,5 +128,50 @@ echo "$a" # A B  C    D
 如果变量值的本身也是变量，可以用 `${!variable}` 读取最终的值。但是不推荐使用这种方法读取被引用的变量，推荐使用 `declare -n` 来定义引用变量，之后我们会详细说明。
 
 ```shell
+a=3
+b=a
+c=b
+echo $a    # 3
+echo $b    # a
+echo $c    # b
+echo ${!b} # 3
+echo ${!c} # a 这里只能读取到 b 变量的值，不会继续读取 a 变量的值
+```
+
+### 删除变量
+
+`unset` 命令用来删除一个变量，但是不能使用 `unset` 命令删除只读变量。
+
+```shell
+unset variable
+```
+
+将一个变量设置为空与删除（`unset`）它不同，尽管它们的表现形式相同。
+
+```shell
+a="a string"
+echo "\$a = $a"
+a=
+echo "\$a (null value) = $a" # $a (null value) =
+
+a="a string"
+unset a
+echo "\$a (uninitialized variable) = $a" # a (uninitialized variable) =
+```
+
+### 输出变量
+
+用户创建的变量仅可用于当前 Shell，子 Shell 默认读取不到父 Shell 定义的变量。为了把变量传递给子 Shell，需要使用 `export` 命令输出变量。这样输出的变量，对于子 Shell 来说就是环境变量。
+
+```shell
+export vairable
+# 变量的赋值和输出可以在一个步骤中完成
+export vairable=value
+```
+
+脚本只能将变量输出到子进程，即在这个脚本中所调用的命令或程序。在命令行中调用的脚本不能够将变量回传给命令行环境，即子进程不能将变量传回给父进程，所以子 Shell 如果修改继承的变量。
+
+```shell
+#!/usr/bin/env bash
 
 ```
