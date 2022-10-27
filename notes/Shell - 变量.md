@@ -101,7 +101,20 @@ echo $vairable1
 实际上，`$variable` 这种写法是 `${variable}` 的简化形式。在某些情况下，使用 `$variable` 写法会造成语法错误，使用完整形式会更好。
 
 ```shell
-echo "$USER_on_$HOSTNAME"     # ✕ 读取变量的时候，Bash 会先读取 USER_on_ 这个变量，这个变量是不存在的
+echo "$USER_on_$HOSTNAME"     # ✕ 读取变量的时候，Bash 会先读取 USER_on_ 这个变量
 echo "${USER}_on_${HOSTNAME}" # ✓ 用 ${USER} 才会正常读取 USER 变量
 ```
 
+如果变量值包含空白符（空格、制表符和换行符），最好放在双引号里面。
+
+```shell
+a="A B  C    D"
+echo $a   # A B C D
+echo "$a" # A B  C    D
+```
+
+如果变量值的本身也是变量，可以用 `${!variable}` 读取最终的值。
+
+```shell
+
+```
