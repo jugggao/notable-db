@@ -159,9 +159,9 @@ unset a
 echo "\$a (uninitialized variable) = $a" # a (uninitialized variable) =
 ```
 
-### 输出变量
+### 导出变量
 
-用户创建的变量仅可用于当前 Shell，子 Shell 默认读取不到父 Shell 定义的变量。为了把变量传递给子 Shell，需要使用 `export` 命令输出变量。这样输出的变量，对于子 Shell 来说就是环境变量。
+用户创建的变量仅可用于当前 Shell，子 Shell 默认读取不到父 Shell 定义的变量。为了把变量传递给子 Shell，需要使用 `export` 命令导出变量。这样导出的变量，对于子 Shell 来说就是环境变量。
 
 ```shell
 export vairable
@@ -174,4 +174,69 @@ export vairable=value
 ```shell
 #!/usr/bin/env bash
 
+echo "The value of \$a is $a" # 如果父 Shell 中有导出的变量 a，则会正确输出变量 a 的值
+a="hello"                     # 重新赋值
+export a                      # 并导出
+declare -p a                  # 查看 a 变量的属性和值
+echo "The value of \$a is now $a"
+
+exit 0
 ```
+
+我们在不同条件的下执行此脚本观察结果：
+
+- 不在父 Shell 初始化变量 `a`。
+
+  ```shell
+  $ sh variable_export.sh
+  The value of $a is
+  declare -x a="hello"
+  The value of $a is now hello
+
+  $ declare -p a
+  -bash: declare: a: not found
+  ```
+
+  可以看到，在子 Shell 中最开始无法读取到变量 `a` 的值，然后赋值并导出了变量 `a`，但是对父 Shell 不生效。
+
+- 在父 Shell 赋值变量 `a` 但不导出。
+
+  ```shell
+  $ a=23
+
+  $ sh variable_export.sh
+  The value of $a is
+  declare -x a="hello"
+  The value of $a is now hello
+
+  $ declare -p a
+  declare -- a="23"
+  ```
+
+  可以看到，如果父 Shell 仅对变量赋值而不导出，子 Shell 依然无法读取到变量 `a`。
+
+- 在父 Shell 赋值并导出变量 `a`。
+
+  ```shell
+  $ export a=23
+
+  $ sh variable_export.sh
+  The value of $a is 23
+  declare -x a="hello"
+  The value of $a is now hello
+
+  $ declare -p a
+  declare -x a="23"
+  ```
+
+  可以看到，如果父 Shell 导出了变量，子 Shell 能够读取到正确的值，但是在子 Shell 中的变量操作依然无法影响父 Shell。
+
+## 变量类型
+
+不同于许多其他编程语言，Bash 并不区分变量的类型。本质上说， Bash 变量是字符串。但在某些情况下，Bash 允许对变量进行算术运算和比较，决定因素则是变量是否只含有数字。
+
+```shell
+
+```
+
+## 变量分类
