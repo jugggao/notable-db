@@ -275,11 +275,42 @@ exit $?
 
 通过上面的示例，可以发现在执行算术运算时，Bash 通常将字符串或空值设为 0，但是不要这样做，因为这样会导致一些意外的后果。
 
-在 `if`、`while` 表达式中，字符串只有为 `"true"` 或者 `"false"` 才能转换为布尔值，否则会进行命令替换。
+在 `if`、`while`、`until` 表达式中，字符串只有为 `"true"` 或者 `"false"` 才能转换为布尔值，否则会进行命令替换。
 
 ```shell
+if $result; then
+    echo "true"
+else
+    echo "false"
+fi # true，空命令
 
+result=''
+if $result; then
+    echo "true"
+else
+    echo "false"
+fi # true，空命令
+
+result="false"
+
+if $result; then
+    echo "true"
+else
+    echo "false"
+fi # false
+
+while $result; do
+    echo "true"
+    break
+done # true
+
+result="a string"
+if $result; then
+    echo "true"
+else
+    echo "false"
+fi # a: command not found
 ```
 
-
 ## 变量分类
+
