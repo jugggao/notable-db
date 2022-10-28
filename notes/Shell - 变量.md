@@ -235,8 +235,51 @@ exit 0
 
 Bash 是一门弱类型语言，不区分变量的类型。无论你输入的是字符串、数字，在 Bash 中都按照字符串类型来存储。所以，Bash 变量就是字符串。但具体是什么类型，Bash 会根据上下文去确定。
 
+以下是字符串与整数之间的自动转换。
+
+```shell
+#!/usr/bin/env bash
+
+a=hello # a 为字符串
+
+b=$((a += 2334))                  # 字符串与整数相加
+echo "\$b (a string) + 2334 = $a" # Bash 会认为字符串的整数值为 0
+((b += 1))                        # 整数与整数相加
+echo "\$b = $a"                   # $b = 2335
+
+c=${b/23/BB}        # 将 "23" 替换为 "BB"
+echo "\$c = $c"     # $b = BB35
+declare -i c        # 将变量 b 声明为整数
+echo "\$c = $c"     # $b = BB35 没有改变 b 的值
+c="a string"        # 将变量 b 重新赋值为字符串，会报错 a string: syntax error in expression (error token is "string")
+((c += 1))          # 但依然可以在算术表达式中计算
+echo "\$c = $c"     # $c = 1
+((c += "a string")) # 如果算术运算中使用字符串
+echo "\$c = $c"     # $c = 1，字符串的整数值会被认为是 0
+
+# 未声明的变量或变量为空值
+d=''            # 也可以是 d="" 或 d=
+echo "\$d = $d" # $d =
+((d += 1))      # 空值也可以进行算术运算
+echo "\$d = $d" # %d = 1，空值变为了一个整数
+
+echo "\$e = $e" # $e =
+((e += 1))      # 未声明的变量也可以进行算术运算
+echo "\$e = $e" # $e = 1，未声明的变量变为了一个整数
+
+((e /= "a string")) # 在这里字符串并没有被设置为 0，会报错为 e /=  : syntax error: operand expected (error token is "/=  ")
+((e /= 0))          # 预期之中，报错为 e /= 0: division by 0 (error token is "0")
+
+exit $?
+```
+
+通过上面的示例，可以发现在执行算术运算时，Bash 通常将字符串或空值设为 0，但是不要这样做，因为这样会导致一些意外的后果。
+
+在 `if`、`while` 表达式中，字符串只有为 `"true"` 或者 `"false"` 才能转换为布尔值，否则会进行命令替换。
+
 ```shell
 
 ```
+
 
 ## 变量分类
