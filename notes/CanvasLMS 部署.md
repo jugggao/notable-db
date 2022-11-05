@@ -2,7 +2,7 @@
 title: CanvasLMS 部署
 tags: [Work]
 created: 2022-11-05T11:34:08.798Z
-modified: 2022-11-05T12:28:50.780Z
+modified: 2022-11-05T12:52:10.580Z
 ---
 
 # CanvasLMS 部署
@@ -184,5 +184,99 @@ production:
 ### 缓存配置
 
 ```shell
+$ for config in cache_store redis; do cp config/$config.yml.example config/$config.yml; done
 
+$ cat config/cache_store.yml
+test:
+  cache_store: redis_cache_store
+development:
+  cache_store: redis_cache_store
+production:
+  cache_store: redis_cache_store
+
+$ cat config/redis.yml
+test:
+  servers:
+  - redis://localhost:6379
+  database: 1
+development:
+  servers:
+  - redis://localhost:6379
+  database: 1
+production:
+  servers:
+  - redis://localhost:6379
+  database: 1
+```
+
+### URL
+
+```
+$ cp config/domain.yml.example config/domain.yml
+
+$ cat config/domain.yml
+test:
+  domain: "test-lms.example.com"
+  ssl: false
+ 
+development:
+  domain: "dev-lms.example.com"
+  ssl: false
+ 
+production:
+  domain: "pre-lms.rvedu.com.cn"
+  ssl: true
+```
+
+### 安全配置
+
+```shell
+$ cp config/security.yml.example config/security.yml
+ 
+$ cat config/security.yml
+production: &default
+  encryption_key: facdd3a131ddd8988b14f6e4e01039c93cfa0160
+ 
+development:
+  <<: *default
+ 
+test:
+  <<: *default
+```
+
+### 其他配置
+
+```shell
+$ for config in delayed_jobs external_migration; do cp config/$config.yml.example config/$config.yml; done
+```
+
+### 初始化资产
+
+```shell
+$ pwd
+/var/canvas
+ 
+$ mkdir -p log tmp/pids public/assets app/stylesheets/brandable_css_brands
+$ touch Gemfile.lock
+$ touch log/production.log
+```
+
+```shell
+$ yarn install
+ 
+# 注意这一步开始选择环境类型
+$ COMPILE_ASSETS_BRAND_CONFIGS=0 RAILS_ENV=production bundle exec rake canvas:compile_assets
+```
+
+> 后续有代码更新只需执行 `RAILS_ENV=production bundle exec rake brand_configs:generate_and_upload_all`
+
+### 初始化数据库
+
+```shell
+$ export CANVAS_LMS_ADMIN_EMAIL=jiahe.xie@ambow.com
+$ export CANVAS_LMS_ADMIN_EMAIL=Ambow99999999
+$ export CANVAS_LMS_ACCOUNT_NAME=jiahe.xie
+$ export CANVAS_LMS_STATS_COLLECTION=opt_out
+ 
+$ RAILS_ENV=production bundle exec rake db:initial_setup
 ```
