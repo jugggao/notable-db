@@ -2,7 +2,7 @@
 title: Shell - 变量
 tags: [Shell]
 created: 2022-10-25T09:14:13.198Z
-modified: 2022-10-26T10:00:40.003Z
+modified: 2022-11-17T03:03:10.465Z
 ---
 
 # Shell - 变量
@@ -318,5 +318,31 @@ fi # a: command not found
 
 仅在代码块或函数中才可见的变量。
 
+```shell
+#!/usr/bin/env bash
+
+func() {
+    local local_var=23 # 声明为局部变量
+    echo "\$local_var in function = $local_var"
+    global_var=999 # 没有声明为局部变量，默认为全局变量
+    echo "\$global_var in function = $global_var"
+}
+
+func
+
+echo
+echo "\$local_var outside function = $local_var"
+# $local_var outside function =
+# $local_var 不是全局可见的
+
+echo "\$global_var outside function = $global_var"
+# $global_var  outside function = 999
+# $global_var 是全局可见的
+
+exit 0
+```
+
 ### 4.2. 环境变量
+
+
 
